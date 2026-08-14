@@ -379,10 +379,6 @@ function App() {
                 })}
               </g>
 
-              <g className="measurements-layer">
-                {measurements.map((measurement) => <Measurement key={measurement.key} measurement={measurement} />)}
-              </g>
-
               <g className="furniture-layer">
                 {placed.map((item) => {
                   const definition = FURNITURE[item.kind]
@@ -425,6 +421,10 @@ function App() {
                     </g>
                   )
                 })}
+              </g>
+
+              <g className="measurements-layer">
+                {measurements.map((measurement) => <Measurement key={measurement.key} measurement={measurement} />)}
               </g>
 
               <g className="room-dimension room-dimension--width">

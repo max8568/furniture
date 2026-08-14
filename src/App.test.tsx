@@ -42,4 +42,14 @@ describe('RoomFit interface', () => {
     expect(screen.getByRole('button', { name: /衣櫃，90 乘 60 公分/ })).toBeInTheDocument()
     expect(screen.getByText('1 / 4')).toBeInTheDocument()
   })
+
+  it('renders measurements above the furniture layer', () => {
+    const { container } = render(<App />)
+    const furnitureLayer = container.querySelector('.furniture-layer')!
+    const measurementsLayer = container.querySelector('.measurements-layer')!
+
+    expect(
+      furnitureLayer.compareDocumentPosition(measurementsLayer) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy()
+  })
 })
