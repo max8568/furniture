@@ -50,6 +50,7 @@ function Icon({ name, size = 20 }: { name: string; size?: number }) {
   if (name === 'plus') return <svg {...common}><path d="M12 5v14M5 12h14" /></svg>
   if (name === 'trash') return <svg {...common}><path d="M4 7h16M9 11v6M15 11v6M6 7l1 14h10l1-14M9 7V4h6v3" /></svg>
   if (name === 'rotate') return <svg {...common}><path d="M20 11a8 8 0 1 0-2.34 5.66" /><path d="M20 4v7h-7" /></svg>
+  if (name === 'undo') return <svg {...common}><path d="M9 7 5 11l4 4" /><path d="M5 11h8a6 6 0 1 1-5.2 9" /></svg>
   if (name === 'check') return <svg {...common}><path d="m5 12 4 4L19 6" /></svg>
   if (name === 'info') return <svg {...common}><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8h.01" /></svg>
   if (name === 'ruler') return <svg {...common}><path d="m4 17 13-13 3 3L7 20 4 17Z" /><path d="m14 7 3 3M11 10l2 2M8 13l3 3" /></svg>
@@ -233,6 +234,18 @@ function App() {
       ? { ...item, [field]: normalized }
       : item))
     setAnnouncement(`${FURNITURE[kind].name} ${field} updated to ${normalized} centimeters`)
+  }
+
+  function resetFurnitureDimensions(kind: FurnitureKind) {
+    const defaults = {
+      width: FURNITURE[kind].width,
+      depth: FURNITURE[kind].depth,
+    }
+    setDimensions((current) => ({ ...current, [kind]: defaults }))
+    setPlaced((current) => current.map((item) => item.kind === kind
+      ? { ...item, ...defaults }
+      : item))
+    setAnnouncement(`${FURNITURE[kind].name} dimensions reset to default`)
   }
 
   function clientToRoom(clientX: number, clientY: number): Point {
@@ -523,6 +536,9 @@ function App() {
             {FURNITURE_ORDER.map((kind) => {
               const definition = FURNITURE[kind]
               const itemDimensions = dimensions[kind]
+              const usesDefaultDimensions =
+                itemDimensions.width === definition.width &&
+                itemDimensions.depth === definition.depth
               const item = placed.find((candidate) => candidate.kind === kind)
               const isAdded = Boolean(item)
               return (
@@ -575,6 +591,15 @@ function App() {
                         </span>
                       </label>
                     </div>
+                    <button
+                      type="button"
+                      className="dimension-reset"
+                      disabled={usesDefaultDimensions}
+                      aria-label={`Reset ${definition.name} dimensions`}
+                      onClick={() => resetFurnitureDimensions(kind)}
+                    >
+                      <Icon name="undo" size={13} />Reset size
+                    </button>
                     {isAdded ? (
                       <div className="furniture-card__actions">
                         <button type="button" onClick={() => item && rotateFurniture(item.id)}><Icon name="rotate" size={16} />Rotate</button>

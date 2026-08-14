@@ -194,7 +194,7 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid rgba(53, 95,
 .sidebar__intro { margin: 9px 0 19px; color: #8b8e88; font-size: 11px; }
 .furniture-list { display: flex; flex-direction: column; gap: 9px; }
 
-.furniture-card { min-height: 154px; padding: 10px; display: grid; grid-template-columns: 85px 1fr; gap: 12px; background: #fff; border: 1px solid #e1ded7; border-radius: 10px; transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease; }
+.furniture-card { min-height: 176px; padding: 10px; display: grid; grid-template-columns: 85px 1fr; gap: 12px; background: #fff; border: 1px solid #e1ded7; border-radius: 10px; transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease; }
 .furniture-card:hover { border-color: #c6c9c1; box-shadow: 0 6px 20px rgba(57, 53, 45, .06); transform: translateY(-1px); }
 .furniture-card--added { border-color: #9bb7ad; background: #fafffc; }
 .furniture-card__preview { border: 0; border-radius: 7px; display: grid; place-items: center; background: #f1efe9; cursor: pointer; }
@@ -223,6 +223,9 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid rgba(53, 95,
 .dimension-input input { width: 100%; min-width: 0; padding: 0; color: #404540; background: transparent; border: 0; outline: 0; font-size: 11px; font-weight: 700; }
 .dimension-input input::-webkit-inner-spin-button { margin: 0; }
 .dimension-input em { color: #9a9d97; font-size: 8px; font-style: normal; font-weight: 500; }
+.dimension-reset { margin: -3px 0 7px auto; padding: 2px 3px; display: inline-flex; align-items: center; gap: 3px; color: #69746e; background: transparent; border: 0; border-radius: 4px; cursor: pointer; font-size: 9px; font-weight: 650; }
+.dimension-reset:hover:not(:disabled) { color: #355f56; background: #edf4f0; }
+.dimension-reset:disabled { opacity: .35; cursor: default; }
 .add-button { width: 100%; padding: 6px 8px; display: flex; justify-content: center; align-items: center; gap: 4px; color: #3c665c; background: #edf4f0; border: 1px solid #d3e4de; border-radius: 6px; cursor: pointer; font-size: 10px; font-weight: 700; }
 .add-button:hover { background: #dfeee8; }
 .furniture-card__actions { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }

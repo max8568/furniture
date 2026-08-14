@@ -84,5 +84,10 @@ describe('RoomFit interface', () => {
     })
 
     expect(screen.getByRole('button', { name: /Desk, 145 by 85 centimeters/ })).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Reset Desk dimensions' }))
+
+    expect(screen.getByRole('button', { name: /Desk, 120 by 70 centimeters/ })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Reset Desk dimensions' })).toBeDisabled()
   })
 })
