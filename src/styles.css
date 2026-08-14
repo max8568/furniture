@@ -141,21 +141,21 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid rgba(53, 95,
 .room-canvas { width: 100%; height: 100%; min-height: 430px; max-height: calc(100vh - 255px); touch-action: none; user-select: none; }
 .room-floor { fill: #faf9f5; filter: drop-shadow(0 8px 13px rgba(63, 56, 46, .12)); }
 .room-grid { fill: url(#large-grid); opacity: .75; pointer-events: none; }
-.room-wall { stroke: #4e514d; stroke-width: 6; stroke-linecap: square; pointer-events: none; }
+.room-wall { stroke: #4e514d; stroke-width: 3; stroke-linecap: square; pointer-events: none; }
 
 .door-fixture { pointer-events: none; }
-.door-fixture path { fill: rgba(194, 112, 84, .09); stroke: #c9876f; stroke-width: 1.5; stroke-dasharray: 4 3; }
-.door-fixture line { stroke: #5c5f5a; stroke-width: 3; }
+.door-fixture path { fill: rgba(194, 112, 84, .09); stroke: #c9876f; stroke-width: 1; stroke-dasharray: 4 3; }
+.door-fixture line { stroke: #5c5f5a; stroke-width: 2; }
 .door-fixture text, .window-fixture text { font-size: 9px; fill: #9a6c5c; }
-.window-fixture line { stroke: #6ca4ad; stroke-width: 3; }
-.column-fixture { fill: #b9b4aa; stroke: #5c5f5a; stroke-width: 2; }
+.window-fixture line { stroke: #6ca4ad; stroke-width: 2; }
+.column-fixture { fill: #b9b4aa; stroke: #5c5f5a; stroke-width: 1.2; }
 
 .furniture { cursor: grab; transition: filter .15s ease; }
 .furniture:active { cursor: grabbing; }
-.furniture__body { stroke-width: 1.6; transition: stroke-width .15s ease, opacity .15s ease; }
-.furniture--selected .furniture__body { stroke: #263c36; stroke-width: 3; }
+.furniture__body { stroke-width: 1.2; transition: stroke-width .15s ease, opacity .15s ease; }
+.furniture--selected .furniture__body { stroke: #263c36; stroke-width: 2; }
 .furniture--selected .furniture__body::after { content: ""; }
-.furniture--warning .furniture__body { stroke: #a84135; stroke-width: 3; stroke-dasharray: 5 3; }
+.furniture--warning .furniture__body { stroke: #a84135; stroke-width: 2; stroke-dasharray: 4 3; }
 .furniture__name { fill: #2e332f; font-size: 12px; font-weight: 750; pointer-events: none; }
 .furniture__size { fill: rgba(46, 51, 47, .66); font-size: 8.5px; pointer-events: none; }
 .furniture__alert circle { fill: #a84135; stroke: white; stroke-width: 2; }

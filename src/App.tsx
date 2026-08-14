@@ -88,7 +88,7 @@ function FurnitureGlyph({
   if (kind === 'bed') {
     const head = Math.min(28, height * 0.2)
     return (
-      <g opacity=".72" stroke={stroke} fill="none" strokeWidth="2">
+      <g opacity=".72" stroke={stroke} fill="none" strokeWidth="1.2">
         <line x1={x} y1={y + head} x2={x + width} y2={y + head} />
         <rect x={x + 8} y={y + 7} width={width - 16} height={Math.max(10, head - 12)} rx="5" />
         <path d={`M ${x + 8} ${y + head + 13} Q 0 ${y + head + 2} ${x + width - 8} ${y + head + 13}`} opacity=".5" />
@@ -97,7 +97,7 @@ function FurnitureGlyph({
   }
   if (kind === 'desk') {
     return (
-      <g opacity=".66" stroke={stroke} fill="none" strokeWidth="2">
+      <g opacity=".66" stroke={stroke} fill="none" strokeWidth="1.2">
         <line x1={x + 8} y1={y + 11} x2={x + width - 8} y2={y + 11} />
         <circle cx={0} cy={Math.min(10, height / 5)} r={Math.min(15, width / 7)} />
         <path d={`M ${-Math.min(25, width / 4)} ${y + height - 12} H ${Math.min(25, width / 4)}`} />
@@ -106,13 +106,13 @@ function FurnitureGlyph({
   }
   if (kind === 'bookcase') {
     return (
-      <g opacity=".62" stroke={stroke} fill="none" strokeWidth="1.8">
+      <g opacity=".62" stroke={stroke} fill="none" strokeWidth="1.1">
         {[-0.25, 0, 0.25].map((ratio) => <line key={ratio} x1={x + 6} y1={ratio * height} x2={x + width - 6} y2={ratio * height} />)}
       </g>
     )
   }
   return (
-    <g opacity=".64" stroke={stroke} fill="none" strokeWidth="1.8">
+    <g opacity=".64" stroke={stroke} fill="none" strokeWidth="1.1">
       <line x1="0" y1={y + 5} x2="0" y2={y + height - 5} />
       <circle cx="-5" cy="0" r="1.8" fill={stroke} />
       <circle cx="5" cy="0" r="1.8" fill={stroke} />
