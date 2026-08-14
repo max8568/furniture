@@ -359,11 +359,15 @@ function App() {
                 {ROOM.fixtures.map((fixture) => {
                   const { x, y, width, height } = fixture.rect
                   if (fixture.type === 'door') {
+                    const hingeOnLeft = fixture.hinge === 'left'
+                    const hingeX = hingeOnLeft ? x : x + width
+                    const closedX = hingeOnLeft ? x + width : x
+                    const sweep = hingeOnLeft ? 0 : 1
                     return (
                       <g key={fixture.id} className="door-fixture" aria-label={fixture.label}>
-                        <path d={`M ${x} ${y + height} A ${width} ${height} 0 0 1 ${x + width} ${y}`} />
-                        <line x1={x + width} y1={y + height} x2={x + width} y2={y} />
-                        <line x1={x} y1={y + height} x2={x + width} y2={y + height} />
+                        <path d={`M ${closedX} ${y + height} A ${width} ${height} 0 0 ${sweep} ${hingeX} ${y}`} />
+                        <line x1={hingeX} y1={y + height} x2={hingeX} y2={y} />
+                        <line x1={hingeX} y1={y + height} x2={closedX} y2={y + height} />
                         <text x={x + width * .38} y={y + height * .72}>門</text>
                       </g>
                     )

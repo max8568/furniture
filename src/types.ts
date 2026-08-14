@@ -37,6 +37,7 @@ export type RoomFixture = {
   label: string
   rect: Rect
   blocking: boolean
+  hinge?: 'left' | 'right'
 }
 
 export type RoomDefinition = {

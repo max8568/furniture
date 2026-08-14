@@ -70,6 +70,7 @@ export const ROOM: RoomDefinition = {
       label: '門扇開啟區',
       rect: { x: 0, y: 144, width: 80, height: 80 },
       blocking: true,
+      hinge: 'left',
     },
   ],
 }

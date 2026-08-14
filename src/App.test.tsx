@@ -52,4 +52,11 @@ describe('RoomFit interface', () => {
       furnitureLayer.compareDocumentPosition(measurementsLayer) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy()
   })
+
+  it('renders the door swing around the left hinge', () => {
+    const { container } = render(<App />)
+    const swing = container.querySelector('.door-fixture path')
+
+    expect(swing).toHaveAttribute('d', 'M 80 224 A 80 80 0 0 0 0 144')
+  })
 })
