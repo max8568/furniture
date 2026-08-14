@@ -1,29 +1,29 @@
-# RoomFit 家具配置工具
+# RoomFit Furniture Planner
 
-以真實公分比例呈現房間與家具的 React 單頁應用。使用者可以加入家具、拖曳、旋轉，並查看家具到牆面及最近家具的淨距。
+RoomFit is a React single-page application for arranging furniture on a measured floor plan. Users can add, drag, and rotate furniture while checking clearances from walls and nearby items.
 
-## 本機執行
+## Run locally
 
 ```bash
 npm install
 npm run dev
 ```
 
-正式建置與測試：
+Run the test suite and create a production build:
 
 ```bash
 npm test
 npm run build
 ```
 
-## 線上版本
+## Live site
 
-推送至 `main` 分支後，GitHub Actions 會自動測試、建置並發布到：
+Every push to `main` triggers a GitHub Actions workflow that tests, builds, and deploys the application:
 
 <https://max8568.github.io/furniture/>
 
-## 房型設定
+## Room configuration
 
-房間多邊形、牆段、門窗／柱體及家具規格集中在 `src/config.ts`。畫布內部座標皆以公分為單位；若房型更新，只需替換 `ROOM` 定義，幾何、吸附與距離計算不需重寫。
+The room polygon, wall segments, doors, windows, columns, and furniture dimensions are defined in `src/config.ts`. Canvas coordinates use centimeters, so updating the `ROOM` definition does not require changes to the geometry, snapping, or distance-measurement logic.
 
-目前房型依 `room.png` 的標示建立，總外框為 401 × 224 cm，包含 96 × 73 cm 左上凹口與 80 cm 門口。
+The current room is based on the measurements in `room.png`. Its overall footprint is 401 × 224 cm, with a 96 × 73 cm recess in the upper-left corner and an 80 cm doorway.

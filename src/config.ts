@@ -5,7 +5,7 @@ export const SNAP_DISTANCE_CM = 10
 export const FURNITURE: Record<FurnitureKind, FurnitureDefinition> = {
   bed: {
     kind: 'bed',
-    name: '單人床',
+    name: 'Single Bed',
     width: 105,
     depth: 190,
     color: '#ef907f',
@@ -14,7 +14,7 @@ export const FURNITURE: Record<FurnitureKind, FurnitureDefinition> = {
   },
   desk: {
     kind: 'desk',
-    name: '書桌',
+    name: 'Desk',
     width: 120,
     depth: 70,
     color: '#e9b85f',
@@ -23,7 +23,7 @@ export const FURNITURE: Record<FurnitureKind, FurnitureDefinition> = {
   },
   bookcase: {
     kind: 'bookcase',
-    name: '書櫃',
+    name: 'Bookcase',
     width: 80,
     depth: 60,
     color: '#70b5a0',
@@ -32,7 +32,7 @@ export const FURNITURE: Record<FurnitureKind, FurnitureDefinition> = {
   },
   wardrobe: {
     kind: 'wardrobe',
-    name: '衣櫃',
+    name: 'Wardrobe',
     width: 90,
     depth: 60,
     color: '#819fce',
@@ -44,7 +44,7 @@ export const FURNITURE: Record<FurnitureKind, FurnitureDefinition> = {
 export const FURNITURE_ORDER: FurnitureKind[] = ['bed', 'desk', 'bookcase', 'wardrobe']
 
 export const ROOM: RoomDefinition = {
-  name: '臥室',
+  name: 'Bedroom',
   width: 401,
   height: 224,
   polygon: [
@@ -67,7 +67,7 @@ export const ROOM: RoomDefinition = {
     {
       id: 'door-swing',
       type: 'door',
-      label: '門扇開啟區',
+      label: 'Door swing area',
       rect: { x: 0, y: 144, width: 80, height: 80 },
       blocking: true,
       hinge: 'left',

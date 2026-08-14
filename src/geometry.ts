@@ -145,7 +145,7 @@ export function nearestFurnitureMeasurement(
       nearest = {
         key: `furniture-${other.id}`,
         ...result,
-        label: result.value < EPSILON ? '重疊' : `${Math.round(result.value)} cm`,
+        label: result.value < EPSILON ? 'Overlap' : `${Math.round(result.value)} cm`,
         kind: 'furniture',
       }
     }

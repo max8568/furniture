@@ -10,25 +10,25 @@ describe('RoomFit interface', () => {
 
   it('starts empty and lets the user add one furniture item', () => {
     render(<App />)
-    expect(screen.getByText('房間還是空的')).toBeInTheDocument()
+    expect(screen.getByText('Your room is empty')).toBeInTheDocument()
 
-    fireEvent.click(screen.getByRole('button', { name: '加入單人床' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Add Single Bed' }))
 
-    expect(screen.queryByText('房間還是空的')).not.toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /單人床，105 乘 190 公分/ })).toBeInTheDocument()
+    expect(screen.queryByText('Your room is empty')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Single Bed, 105 by 190 centimeters/ })).toBeInTheDocument()
     expect(screen.getByText('1 / 4')).toBeInTheDocument()
   })
 
   it('rotates, nudges, and removes a selected item', () => {
     render(<App />)
-    fireEvent.click(screen.getByRole('button', { name: '加入書桌' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Add Desk' }))
 
-    const desk = screen.getByRole('button', { name: /書桌，120 乘 70 公分/ })
+    const desk = screen.getByRole('button', { name: /Desk, 120 by 70 centimeters/ })
     fireEvent.keyDown(desk, { key: 'ArrowRight' })
-    fireEvent.click(screen.getByRole('button', { name: '旋轉 90°' }))
-    fireEvent.click(screen.getByTitle('移除家具'))
+    fireEvent.click(screen.getByRole('button', { name: 'Rotate 90°' }))
+    fireEvent.click(screen.getByTitle('Remove furniture'))
 
-    expect(screen.queryByRole('button', { name: /書桌，120 乘 70 公分/ })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Desk, 120 by 70 centimeters/ })).not.toBeInTheDocument()
     expect(screen.getByText('0 / 4')).toBeInTheDocument()
   })
 
@@ -39,7 +39,7 @@ describe('RoomFit interface', () => {
     }))
 
     render(<App />)
-    expect(screen.getByRole('button', { name: /衣櫃，90 乘 60 公分/ })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Wardrobe, 90 by 60 centimeters/ })).toBeInTheDocument()
     expect(screen.getByText('1 / 4')).toBeInTheDocument()
   })
 
@@ -62,10 +62,10 @@ describe('RoomFit interface', () => {
 
   it('rotates the furniture details together with the body', () => {
     const { container } = render(<App />)
-    fireEvent.click(screen.getByRole('button', { name: '加入單人床' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Add Single Bed' }))
     expect(container.querySelector('.furniture__glyph')).toHaveAttribute('transform', 'rotate(0)')
 
-    fireEvent.click(screen.getByRole('button', { name: '旋轉 90°' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Rotate 90°' }))
 
     expect(container.querySelector('.furniture__glyph')).toHaveAttribute('transform', 'rotate(90)')
   })

@@ -29,9 +29,9 @@ type DragState = {
 }
 
 const WARNING_TEXT: Record<PlacementWarning, string> = {
-  outside: '家具超出房間邊界',
-  overlap: '家具互相重疊',
-  fixture: '家具占用固定設施',
+  outside: 'Furniture extends beyond the room boundary',
+  overlap: 'Furniture overlaps another item',
+  fixture: 'Furniture blocks a fixed room feature',
 }
 
 function Icon({ name, size = 20 }: { name: string; size?: number }) {
@@ -115,17 +115,17 @@ function Measurement({ measurement }: { measurement: DistanceMeasurement }) {
   const dx = measurement.to.x - measurement.from.x
   const dy = measurement.to.y - measurement.from.y
   const length = Math.hypot(dx, dy)
-  if (length < 0.1 && measurement.label !== '重疊') return null
+  if (length < 0.1 && measurement.label !== 'Overlap') return null
   const midX = (measurement.from.x + measurement.to.x) / 2
   const midY = (measurement.from.y + measurement.to.y) / 2
   const labelWidth = measurement.label.length * 7.1 + 14
   const color = measurement.kind === 'furniture' ? '#c05b46' : '#44766e'
 
-  if (measurement.label === '重疊') {
+  if (measurement.label === 'Overlap') {
     return (
       <g className="measurement measurement--overlap" pointerEvents="none">
         <rect x={midX - 24} y={midY - 10} width="48" height="20" rx="10" fill="#a84135" />
-        <text x={midX} y={midY + 4} textAnchor="middle" fill="white">重疊</text>
+        <text x={midX} y={midY + 4} textAnchor="middle" fill="white">Overlap</text>
       </g>
     )
   }
@@ -154,7 +154,7 @@ function Measurement({ measurement }: { measurement: DistanceMeasurement }) {
 function App() {
   const [placed, setPlaced] = useState<PlacedFurniture[]>(loadLayout)
   const [selectedId, setSelectedId] = useState<string | null>(null)
-  const [announcement, setAnnouncement] = useState('房間配置工具已就緒')
+  const [announcement, setAnnouncement] = useState('Room planner ready')
   const svgRef = useRef<SVGSVGElement>(null)
   const dragRef = useRef<DragState | null>(null)
 
@@ -179,14 +179,14 @@ function App() {
     const next: PlacedFurniture = { id: kind, kind, ...point, rotation: 0 }
     setPlaced((current) => [...current, next])
     setSelectedId(next.id)
-    setAnnouncement(`已加入${definition.name}`)
+    setAnnouncement(`${definition.name} added`)
   }
 
   function removeFurniture(id: string) {
     const item = placed.find((candidate) => candidate.id === id)
     setPlaced((current) => current.filter((candidate) => candidate.id !== id))
     if (selectedId === id) setSelectedId(null)
-    if (item) setAnnouncement(`已移除${FURNITURE[item.kind].name}`)
+    if (item) setAnnouncement(`${FURNITURE[item.kind].name} removed`)
   }
 
   function rotateFurniture(id: string) {
@@ -198,7 +198,7 @@ function App() {
       return { ...item, ...snapped, rotation }
     }))
     const item = placed.find((candidate) => candidate.id === id)
-    if (item) setAnnouncement(`${FURNITURE[item.kind].name}已旋轉 90 度`)
+    if (item) setAnnouncement(`${FURNITURE[item.kind].name} rotated 90 degrees`)
   }
 
   function clientToRoom(clientX: number, clientY: number): Point {
@@ -244,7 +244,7 @@ function App() {
     if (!drag || drag.pointerId !== event.pointerId) return
     const item = placed.find((candidate) => candidate.id === drag.id)
     dragRef.current = null
-    if (item) setAnnouncement(`${FURNITURE[item.kind].name}位置已更新`)
+    if (item) setAnnouncement(`${FURNITURE[item.kind].name} position updated`)
   }
 
   function nudgeSelected(event: React.KeyboardEvent<SVGGElement>, item: PlacedFurniture) {
@@ -266,10 +266,10 @@ function App() {
   }
 
   function clearLayout() {
-    if (!placed.length || window.confirm('確定要移除房間內的所有家具嗎？')) {
+    if (!placed.length || window.confirm('Remove all furniture from the room?')) {
       setPlaced([])
       setSelectedId(null)
-      setAnnouncement('配置已清除')
+      setAnnouncement('Layout cleared')
     }
   }
 
@@ -280,7 +280,7 @@ function App() {
           <span className="brand__mark" aria-hidden="true"><span /></span>
           <div>
             <strong>RoomFit</strong>
-            <span>家具配置工具</span>
+            <span>Furniture Planner</span>
           </div>
         </div>
         <div className="topbar__room">
@@ -290,30 +290,30 @@ function App() {
         </div>
         <button className="button button--quiet" type="button" onClick={clearLayout} disabled={!placed.length}>
           <Icon name="trash" size={17} />
-          清除配置
+          Clear Layout
         </button>
       </header>
 
       <main className="workspace">
-        <section className="canvas-panel" aria-label="房間配置畫布">
+        <section className="canvas-panel" aria-label="Room planning canvas">
           <div className="canvas-panel__head">
             <div>
-              <p className="eyebrow">配置畫布</p>
-              <h1>規劃你的理想動線</h1>
-              <p>拖曳家具調整位置，點選後查看精確間距。</p>
+              <p className="eyebrow">Planning Canvas</p>
+              <h1>Design your ideal flow</h1>
+              <p>Drag furniture to reposition it, then select an item to view exact clearances.</p>
             </div>
             {selected ? (
-              <div className="selection-tools" aria-label={`${FURNITURE[selected.kind].name}操作`}>
+              <div className="selection-tools" aria-label={`${FURNITURE[selected.kind].name} controls`}>
                 <span><i style={{ backgroundColor: FURNITURE[selected.kind].color }} />{FURNITURE[selected.kind].name}</span>
-                <button type="button" onClick={() => rotateFurniture(selected.id)} title="順時針旋轉 90 度">
-                  <Icon name="rotate" size={18} />旋轉 90°
+                <button type="button" onClick={() => rotateFurniture(selected.id)} title="Rotate clockwise 90 degrees">
+                  <Icon name="rotate" size={18} />Rotate 90°
                 </button>
-                <button className="selection-tools__delete" type="button" onClick={() => removeFurniture(selected.id)} title="移除家具">
-                  <Icon name="trash" size={18} /><span className="sr-only">移除家具</span>
+                <button className="selection-tools__delete" type="button" onClick={() => removeFurniture(selected.id)} title="Remove furniture">
+                  <Icon name="trash" size={18} /><span className="sr-only">Remove furniture</span>
                 </button>
               </div>
             ) : (
-              <div className="selection-hint"><Icon name="info" size={17} />選取家具即可編輯</div>
+              <div className="selection-hint"><Icon name="info" size={17} />Select furniture to edit</div>
             )}
           </div>
 
@@ -323,7 +323,7 @@ function App() {
               className="room-canvas"
               viewBox={`${VIEWBOX.x} ${VIEWBOX.y} ${VIEWBOX.width} ${VIEWBOX.height}`}
               role="application"
-              aria-label={`${ROOM.width} 公分乘 ${ROOM.height} 公分的房間平面圖`}
+              aria-label={`${ROOM.width} by ${ROOM.height} centimeter room floor plan`}
               onPointerMove={moveDrag}
               onPointerUp={endDrag}
               onPointerCancel={endDrag}
@@ -369,7 +369,7 @@ function App() {
                         <path d={`M ${closedX} ${y + height} A ${width} ${height} 0 0 ${sweep} ${hingeX} ${y}`} />
                         <line x1={hingeX} y1={y + height} x2={hingeX} y2={y} />
                         <line x1={hingeX} y1={y + height} x2={closedX} y2={y + height} />
-                        <text x={x + width * .38} y={y + height * .72}>門</text>
+                        <text x={x + width * .38} y={y + height * .72}>Door</text>
                       </g>
                     )
                   }
@@ -398,7 +398,7 @@ function App() {
                       transform={`translate(${item.x} ${item.y})`}
                       tabIndex={0}
                       role="button"
-                      aria-label={`${definition.name}，${definition.width} 乘 ${definition.depth} 公分${hasWarning ? `，${warnings.map((warning) => WARNING_TEXT[warning]).join('、')}` : ''}`}
+                      aria-label={`${definition.name}, ${definition.width} by ${definition.depth} centimeters${hasWarning ? `, ${warnings.map((warning) => WARNING_TEXT[warning]).join(', ')}` : ''}`}
                       onPointerDown={(event) => beginDrag(event, item)}
                       onKeyDown={(event) => nudgeSelected(event, item)}
                       onFocus={() => setSelectedId(item.id)}
@@ -455,35 +455,35 @@ function App() {
             {!placed.length && (
               <div className="empty-state" aria-hidden="true">
                 <span><Icon name="plus" size={24} /></span>
-                <strong>房間還是空的</strong>
-                <p>從右側清單加入第一件家具</p>
+                <strong>Your room is empty</strong>
+                <p>Add your first item from the furniture list</p>
               </div>
             )}
 
             <div className="canvas-legend">
-              <span><i className="legend-grid" />每小格 20 cm</span>
-              <span><i className="legend-snap" />10 cm 內靠牆吸附</span>
+              <span><i className="legend-grid" />Each small square is 20 cm</span>
+              <span><i className="legend-snap" />Wall snap within 10 cm</span>
             </div>
           </div>
 
           <div className={`warning-bar ${selectedWarnings.length ? 'warning-bar--active' : ''}`}>
             {selectedWarnings.length ? (
-              <><span className="warning-bar__icon">!</span><strong>擺放提醒</strong><span>{selectedWarnings.map((warning) => WARNING_TEXT[warning]).join('、')}</span></>
+              <><span className="warning-bar__icon">!</span><strong>Placement warning</strong><span>{selectedWarnings.map((warning) => WARNING_TEXT[warning]).join(', ')}</span></>
             ) : (
-              <><Icon name="check" size={18} /><span>{selected ? '目前位置沒有發現擺放問題' : '選取家具後，這裡會顯示擺放檢查結果'}</span></>
+              <><Icon name="check" size={18} /><span>{selected ? 'No placement issues detected' : 'Select furniture to view placement checks'}</span></>
             )}
           </div>
         </section>
 
-        <aside className="sidebar" aria-label="家具列表">
+        <aside className="sidebar" aria-label="Furniture list">
           <div className="sidebar__head">
             <div>
-              <p className="eyebrow">家具清單</p>
-              <h2>選擇家具</h2>
+              <p className="eyebrow">Furniture List</p>
+              <h2>Choose furniture</h2>
             </div>
             <span className="sidebar__count">{placed.length} / {FURNITURE_ORDER.length}</span>
           </div>
-          <p className="sidebar__intro">點擊加入房間，每種家具可放置一件。</p>
+          <p className="sidebar__intro">Add one of each furniture type to the room.</p>
 
           <div className="furniture-list">
             {FURNITURE_ORDER.map((kind) => {
@@ -497,23 +497,23 @@ function App() {
                     className="furniture-card__preview"
                     style={{ '--item-color': definition.color, '--item-accent': definition.accent } as React.CSSProperties}
                     onClick={() => item ? setSelectedId(item.id) : addFurniture(kind)}
-                    aria-label={isAdded ? `選取${definition.name}` : `加入${definition.name}`}
+                    aria-label={isAdded ? `Select ${definition.name}` : `Add ${definition.name}`}
                   >
                     <span className={`mini-furniture mini-furniture--${kind}`}><i /></span>
                   </button>
                   <div className="furniture-card__details">
                     <div className="furniture-card__title">
                       <h3>{definition.name}</h3>
-                      {isAdded && <span><Icon name="check" size={12} />已加入</span>}
+                      {isAdded && <span><Icon name="check" size={12} />Added</span>}
                     </div>
-                    <p>寬 {definition.width} × 深 {definition.depth} cm</p>
+                    <p>W {definition.width} × D {definition.depth} cm</p>
                     {isAdded ? (
                       <div className="furniture-card__actions">
-                        <button type="button" onClick={() => item && rotateFurniture(item.id)}><Icon name="rotate" size={16} />旋轉</button>
-                        <button type="button" className="remove" onClick={() => item && removeFurniture(item.id)}><Icon name="trash" size={16} />移除</button>
+                        <button type="button" onClick={() => item && rotateFurniture(item.id)}><Icon name="rotate" size={16} />Rotate</button>
+                        <button type="button" className="remove" onClick={() => item && removeFurniture(item.id)}><Icon name="trash" size={16} />Remove</button>
                       </div>
                     ) : (
-                      <button type="button" className="add-button" onClick={() => addFurniture(kind)}><Icon name="plus" size={17} />加入房間</button>
+                      <button type="button" className="add-button" onClick={() => addFurniture(kind)}><Icon name="plus" size={17} />Add to room</button>
                     )}
                   </div>
                 </article>
@@ -523,9 +523,9 @@ function App() {
 
           <div className="sidebar-tip">
             <Icon name="ruler" size={20} />
-            <div><strong>間距怎麼看？</strong><p>選取畫布中的家具，即可查看它與四側牆面及最近家具的淨距。</p></div>
+            <div><strong>How do clearances work?</strong><p>Select furniture on the canvas to see its clearance from each wall and the nearest item.</p></div>
           </div>
-          <div className="save-status"><span /><p><strong>已自動儲存</strong><small>配置會保留在這台裝置</small></p></div>
+          <div className="save-status"><span /><p><strong>Automatically saved</strong><small>Your layout stays on this device</small></p></div>
         </aside>
       </main>
       <div className="sr-only" aria-live="polite">{announcement}</div>

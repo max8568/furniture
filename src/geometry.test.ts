@@ -82,7 +82,7 @@ describe('distance measurements', () => {
   it('labels overlapping furniture without a negative distance', () => {
     const selected = makeItem()
     const overlap = makeItem({ id: 'bed', kind: 'bed', x: 200, y: 150 })
-    expect(nearestFurnitureMeasurement(selected, [selected, overlap])?.label).toBe('重疊')
+    expect(nearestFurnitureMeasurement(selected, [selected, overlap])?.label).toBe('Overlap')
   })
 })
 
