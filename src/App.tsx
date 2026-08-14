@@ -68,14 +68,15 @@ function getWarnings(item: PlacedFurniture, all: PlacedFurniture[]): PlacementWa
   return warnings
 }
 
-function FurnitureGlyph({ item }: { item: PlacedFurniture }) {
-  const definition = FURNITURE[item.kind]
-  const { width, height } = getFurnitureSize(definition, item.rotation)
+function FurnitureGlyph({ kind }: { kind: FurnitureKind }) {
+  const definition = FURNITURE[kind]
+  const width = definition.width
+  const height = definition.depth
   const x = -width / 2
   const y = -height / 2
   const stroke = definition.accent
 
-  if (item.kind === 'bed') {
+  if (kind === 'bed') {
     const head = Math.min(28, height * 0.2)
     return (
       <g opacity=".72" stroke={stroke} fill="none" strokeWidth="2">
@@ -85,7 +86,7 @@ function FurnitureGlyph({ item }: { item: PlacedFurniture }) {
       </g>
     )
   }
-  if (item.kind === 'desk') {
+  if (kind === 'desk') {
     return (
       <g opacity=".66" stroke={stroke} fill="none" strokeWidth="2">
         <line x1={x + 8} y1={y + 11} x2={x + width - 8} y2={y + 11} />
@@ -94,7 +95,7 @@ function FurnitureGlyph({ item }: { item: PlacedFurniture }) {
       </g>
     )
   }
-  if (item.kind === 'bookcase') {
+  if (kind === 'bookcase') {
     return (
       <g opacity=".62" stroke={stroke} fill="none" strokeWidth="1.8">
         {[-0.25, 0, 0.25].map((ratio) => <line key={ratio} x1={x + 6} y1={ratio * height} x2={x + width - 6} y2={ratio * height} />)}
@@ -413,7 +414,9 @@ function App() {
                         stroke={definition.accent}
                         filter="url(#furniture-shadow)"
                       />
-                      <FurnitureGlyph item={item} />
+                      <g className="furniture__glyph" transform={`rotate(${item.rotation})`}>
+                        <FurnitureGlyph kind={item.kind} />
+                      </g>
                       <text className="furniture__name" y="4" textAnchor="middle">{definition.name}</text>
                       <text className="furniture__size" y="18" textAnchor="middle">{definition.width} × {definition.depth}</text>
                       {hasWarning && (

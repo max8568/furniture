@@ -59,4 +59,14 @@ describe('RoomFit interface', () => {
 
     expect(swing).toHaveAttribute('d', 'M 80 224 A 80 80 0 0 0 0 144')
   })
+
+  it('rotates the furniture details together with the body', () => {
+    const { container } = render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: '加入單人床' }))
+    expect(container.querySelector('.furniture__glyph')).toHaveAttribute('transform', 'rotate(0)')
+
+    fireEvent.click(screen.getByRole('button', { name: '旋轉 90°' }))
+
+    expect(container.querySelector('.furniture__glyph')).toHaveAttribute('transform', 'rotate(90)')
+  })
 })
