@@ -1,6 +1,6 @@
 # RoomFit Furniture Planner
 
-RoomFit is a React single-page application for arranging furniture on a measured floor plan. Users can add, drag, and rotate furniture while checking clearances from walls and nearby items.
+RoomFit is a React single-page application for arranging furniture on a measured floor plan. Users can edit furniture dimensions, add, drag, and rotate items while checking clearances from walls and nearby furniture.
 
 ## Run locally
 

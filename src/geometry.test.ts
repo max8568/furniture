@@ -15,6 +15,8 @@ import type { PlacedFurniture, Rect } from './types'
 const makeItem = (overrides: Partial<PlacedFurniture> = {}): PlacedFurniture => ({
   id: 'desk',
   kind: 'desk',
+  width: 120,
+  depth: 70,
   x: 200,
   y: 150,
   rotation: 0,
@@ -72,8 +74,8 @@ describe('distance measurements', () => {
 
   it('returns the nearest furniture edge-to-edge distance', () => {
     const selected = makeItem()
-    const nearby = makeItem({ id: 'bookcase', kind: 'bookcase', x: 310, y: 150 })
-    const far = makeItem({ id: 'wardrobe', kind: 'wardrobe', x: 200, y: 270 })
+    const nearby = makeItem({ id: 'bookcase', kind: 'bookcase', width: 80, depth: 60, x: 310, y: 150 })
+    const far = makeItem({ id: 'wardrobe', kind: 'wardrobe', width: 90, depth: 60, x: 200, y: 270 })
     const measurement = nearestFurnitureMeasurement(selected, [selected, nearby, far])
     expect(measurement?.value).toBe(10)
     expect(measurement?.label).toBe('10 cm')
@@ -81,7 +83,7 @@ describe('distance measurements', () => {
 
   it('labels overlapping furniture without a negative distance', () => {
     const selected = makeItem()
-    const overlap = makeItem({ id: 'bed', kind: 'bed', x: 200, y: 150 })
+    const overlap = makeItem({ id: 'bed', kind: 'bed', width: 105, depth: 190, x: 200, y: 150 })
     expect(nearestFurnitureMeasurement(selected, [selected, overlap])?.label).toBe('Overlap')
   })
 })
@@ -90,7 +92,7 @@ describe('automatic placement', () => {
   it('chooses a legal position that avoids the door swing and existing furniture', () => {
     const existing = makeItem({ x: 200, y: 150 })
     const result = findAvailablePosition(FURNITURE.bookcase, [existing], ROOM)
-    const candidate = makeItem({ id: 'bookcase', kind: 'bookcase', ...result })
+    const candidate = makeItem({ id: 'bookcase', kind: 'bookcase', width: 80, depth: 60, ...result })
     expect(rectInsidePolygon(furnitureToRect(candidate), ROOM.polygon)).toBe(true)
     expect(rectsOverlap(furnitureToRect(candidate), furnitureToRect(existing))).toBe(false)
     expect(ROOM.fixtures.some((fixture) => fixture.blocking && rectsOverlap(furnitureToRect(candidate), fixture.rect))).toBe(false)

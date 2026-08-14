@@ -1,7 +1,7 @@
-import { FURNITURE } from './config'
 import type {
   DistanceMeasurement,
   FurnitureDefinition,
+  FurnitureDimensions,
   PlacedFurniture,
   Point,
   Rect,
@@ -11,16 +11,16 @@ import type {
 const EPSILON = 0.001
 
 export function getFurnitureSize(
-  definition: FurnitureDefinition,
+  dimensions: FurnitureDimensions,
   rotation: PlacedFurniture['rotation'],
 ) {
   return rotation % 180 === 0
-    ? { width: definition.width, height: definition.depth }
-    : { width: definition.depth, height: definition.width }
+    ? { width: dimensions.width, height: dimensions.depth }
+    : { width: dimensions.depth, height: dimensions.width }
 }
 
 export function furnitureToRect(item: PlacedFurniture): Rect {
-  const size = getFurnitureSize(FURNITURE[item.kind], item.rotation)
+  const size = getFurnitureSize(item, item.rotation)
   return {
     x: item.x - size.width / 2,
     y: item.y - size.height / 2,

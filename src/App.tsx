@@ -10,9 +10,10 @@ import {
   rectsOverlap,
   wallMeasurements,
 } from './geometry'
-import { loadLayout, saveLayout } from './storage'
+import { loadPlannerState, savePlannerState } from './storage'
 import type {
   DistanceMeasurement,
+  FurnitureDimensionMap,
   FurnitureKind,
   PlacementWarning,
   PlacedFurniture,
@@ -68,10 +69,17 @@ function getWarnings(item: PlacedFurniture, all: PlacedFurniture[]): PlacementWa
   return warnings
 }
 
-function FurnitureGlyph({ kind }: { kind: FurnitureKind }) {
+function FurnitureGlyph({
+  kind,
+  width,
+  depth,
+}: {
+  kind: FurnitureKind
+  width: number
+  depth: number
+}) {
   const definition = FURNITURE[kind]
-  const width = definition.width
-  const height = definition.depth
+  const height = depth
   const x = -width / 2
   const y = -height / 2
   const stroke = definition.accent
@@ -152,13 +160,15 @@ function Measurement({ measurement }: { measurement: DistanceMeasurement }) {
 }
 
 function App() {
-  const [placed, setPlaced] = useState<PlacedFurniture[]>(loadLayout)
+  const [initialState] = useState(loadPlannerState)
+  const [placed, setPlaced] = useState<PlacedFurniture[]>(initialState.furniture)
+  const [dimensions, setDimensions] = useState<FurnitureDimensionMap>(initialState.dimensions)
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [announcement, setAnnouncement] = useState('Room planner ready')
   const svgRef = useRef<SVGSVGElement>(null)
   const dragRef = useRef<DragState | null>(null)
 
-  useEffect(() => saveLayout(placed), [placed])
+  useEffect(() => savePlannerState(placed, dimensions), [placed, dimensions])
 
   const selected = placed.find((item) => item.id === selectedId) ?? null
   const warningMap = useMemo(
@@ -175,8 +185,15 @@ function App() {
   function addFurniture(kind: FurnitureKind) {
     if (placed.some((item) => item.kind === kind)) return
     const definition = FURNITURE[kind]
-    const point = findAvailablePosition(definition, placed, ROOM)
-    const next: PlacedFurniture = { id: kind, kind, ...point, rotation: 0 }
+    const currentDimensions = dimensions[kind]
+    const point = findAvailablePosition({ ...definition, ...currentDimensions }, placed, ROOM)
+    const next: PlacedFurniture = {
+      id: kind,
+      kind,
+      ...currentDimensions,
+      ...point,
+      rotation: 0,
+    }
     setPlaced((current) => [...current, next])
     setSelectedId(next.id)
     setAnnouncement(`${definition.name} added`)
@@ -193,12 +210,29 @@ function App() {
     setPlaced((current) => current.map((item) => {
       if (item.id !== id) return item
       const rotation = ((item.rotation + 90) % 360) as Rotation
-      const size = getFurnitureSize(FURNITURE[item.kind], rotation)
+      const size = getFurnitureSize(item, rotation)
       const snapped = applyWallSnap({ x: item.x, y: item.y }, size, ROOM, SNAP_DISTANCE_CM)
       return { ...item, ...snapped, rotation }
     }))
     const item = placed.find((candidate) => candidate.id === id)
     if (item) setAnnouncement(`${FURNITURE[item.kind].name} rotated 90 degrees`)
+  }
+
+  function updateFurnitureDimension(
+    kind: FurnitureKind,
+    field: 'width' | 'depth',
+    value: number,
+  ) {
+    if (!Number.isFinite(value)) return
+    const normalized = Math.max(20, Math.min(400, Math.round(value)))
+    setDimensions((current) => ({
+      ...current,
+      [kind]: { ...current[kind], [field]: normalized },
+    }))
+    setPlaced((current) => current.map((item) => item.kind === kind
+      ? { ...item, [field]: normalized }
+      : item))
+    setAnnouncement(`${FURNITURE[kind].name} ${field} updated to ${normalized} centimeters`)
   }
 
   function clientToRoom(clientX: number, clientY: number): Point {
@@ -230,7 +264,7 @@ function App() {
     const pointer = clientToRoom(event.clientX, event.clientY)
     setPlaced((current) => current.map((item) => {
       if (item.id !== drag.id) return item
-      const size = getFurnitureSize(FURNITURE[item.kind], item.rotation)
+      const size = getFurnitureSize(item, item.rotation)
       const raw = {
         x: Math.max(0, Math.min(ROOM.width, pointer.x - drag.offset.x)),
         y: Math.max(0, Math.min(ROOM.height, pointer.y - drag.offset.y)),
@@ -387,7 +421,7 @@ function App() {
               <g className="furniture-layer">
                 {placed.map((item) => {
                   const definition = FURNITURE[item.kind]
-                  const size = getFurnitureSize(definition, item.rotation)
+                  const size = getFurnitureSize(item, item.rotation)
                   const isSelected = item.id === selectedId
                   const warnings = warningMap.get(item.id) ?? []
                   const hasWarning = warnings.length > 0
@@ -398,7 +432,7 @@ function App() {
                       transform={`translate(${item.x} ${item.y})`}
                       tabIndex={0}
                       role="button"
-                      aria-label={`${definition.name}, ${definition.width} by ${definition.depth} centimeters${hasWarning ? `, ${warnings.map((warning) => WARNING_TEXT[warning]).join(', ')}` : ''}`}
+                      aria-label={`${definition.name}, ${item.width} by ${item.depth} centimeters${hasWarning ? `, ${warnings.map((warning) => WARNING_TEXT[warning]).join(', ')}` : ''}`}
                       onPointerDown={(event) => beginDrag(event, item)}
                       onKeyDown={(event) => nudgeSelected(event, item)}
                       onFocus={() => setSelectedId(item.id)}
@@ -415,10 +449,10 @@ function App() {
                         filter="url(#furniture-shadow)"
                       />
                       <g className="furniture__glyph" transform={`rotate(${item.rotation})`}>
-                        <FurnitureGlyph kind={item.kind} />
+                        <FurnitureGlyph kind={item.kind} width={item.width} depth={item.depth} />
                       </g>
                       <text className="furniture__name" y="4" textAnchor="middle">{definition.name}</text>
-                      <text className="furniture__size" y="18" textAnchor="middle">{definition.width} × {definition.depth}</text>
+                      <text className="furniture__size" y="18" textAnchor="middle">{item.width} × {item.depth}</text>
                       {hasWarning && (
                         <g className="furniture__alert" transform={`translate(${size.width / 2 - 2} ${-size.height / 2 + 2})`}>
                           <circle r="9" />
@@ -488,6 +522,7 @@ function App() {
           <div className="furniture-list">
             {FURNITURE_ORDER.map((kind) => {
               const definition = FURNITURE[kind]
+              const itemDimensions = dimensions[kind]
               const item = placed.find((candidate) => candidate.kind === kind)
               const isAdded = Boolean(item)
               return (
@@ -506,7 +541,40 @@ function App() {
                       <h3>{definition.name}</h3>
                       {isAdded && <span><Icon name="check" size={12} />Added</span>}
                     </div>
-                    <p>W {definition.width} × D {definition.depth} cm</p>
+                    <div className="dimension-inputs">
+                      <label htmlFor={`${kind}-width`}>
+                        <span>Width</span>
+                        <span className="dimension-input">
+                          <input
+                            id={`${kind}-width`}
+                            type="number"
+                            min="20"
+                            max="400"
+                            step="1"
+                            value={itemDimensions.width}
+                            aria-label={`${definition.name} width in centimeters`}
+                            onChange={(event) => updateFurnitureDimension(kind, 'width', event.currentTarget.valueAsNumber)}
+                          />
+                          <em>cm</em>
+                        </span>
+                      </label>
+                      <label htmlFor={`${kind}-depth`}>
+                        <span>Depth</span>
+                        <span className="dimension-input">
+                          <input
+                            id={`${kind}-depth`}
+                            type="number"
+                            min="20"
+                            max="400"
+                            step="1"
+                            value={itemDimensions.depth}
+                            aria-label={`${definition.name} depth in centimeters`}
+                            onChange={(event) => updateFurnitureDimension(kind, 'depth', event.currentTarget.valueAsNumber)}
+                          />
+                          <em>cm</em>
+                        </span>
+                      </label>
+                    </div>
                     {isAdded ? (
                       <div className="furniture-card__actions">
                         <button type="button" onClick={() => item && rotateFurniture(item.id)}><Icon name="rotate" size={16} />Rotate</button>

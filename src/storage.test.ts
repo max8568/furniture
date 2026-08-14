@@ -1,22 +1,39 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { loadLayout, saveLayout } from './storage'
+import { getDefaultDimensions, loadPlannerState, savePlannerState } from './storage'
 import type { PlacedFurniture } from './types'
 
-describe('layout persistence', () => {
+describe('planner persistence', () => {
   beforeEach(() => localStorage.clear())
 
-  it('round-trips a valid layout', () => {
-    const layout: PlacedFurniture[] = [{ id: 'desk', kind: 'desk', x: 120, y: 80, rotation: 90 }]
-    saveLayout(layout)
-    expect(loadLayout()).toEqual(layout)
+  it('round-trips furniture and customized dimensions', () => {
+    const dimensions = {
+      ...getDefaultDimensions(),
+      desk: { width: 135, depth: 75 },
+    }
+    const furniture: PlacedFurniture[] = [{
+      id: 'desk',
+      kind: 'desk',
+      width: 135,
+      depth: 75,
+      x: 120,
+      y: 80,
+      rotation: 90,
+    }]
+
+    savePlannerState(furniture, dimensions)
+
+    expect(loadPlannerState()).toEqual({ furniture, dimensions })
   })
 
-  it('returns an empty room for malformed data', () => {
+  it('returns an empty room with default dimensions for malformed data', () => {
     localStorage.setItem('room-fit:layout', '{not-json')
-    expect(loadLayout()).toEqual([])
+    expect(loadPlannerState()).toEqual({
+      furniture: [],
+      dimensions: getDefaultDimensions(),
+    })
   })
 
-  it('filters invalid furniture records', () => {
+  it('migrates valid version-one furniture and filters invalid records', () => {
     localStorage.setItem('room-fit:layout', JSON.stringify({
       version: 1,
       furniture: [
@@ -24,6 +41,17 @@ describe('layout persistence', () => {
         { id: 'broken', kind: 'sofa', x: 'far', y: 30, rotation: 45 },
       ],
     }))
-    expect(loadLayout()).toHaveLength(1)
+
+    const state = loadPlannerState()
+    expect(state.furniture).toEqual([{
+      id: 'desk',
+      kind: 'desk',
+      width: 120,
+      depth: 70,
+      x: 20,
+      y: 30,
+      rotation: 0,
+    }])
+    expect(state.dimensions).toEqual(getDefaultDimensions())
   })
 })

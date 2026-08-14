@@ -194,7 +194,7 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid rgba(53, 95,
 .sidebar__intro { margin: 9px 0 19px; color: #8b8e88; font-size: 11px; }
 .furniture-list { display: flex; flex-direction: column; gap: 9px; }
 
-.furniture-card { min-height: 112px; padding: 10px; display: grid; grid-template-columns: 85px 1fr; gap: 12px; background: #fff; border: 1px solid #e1ded7; border-radius: 10px; transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease; }
+.furniture-card { min-height: 154px; padding: 10px; display: grid; grid-template-columns: 85px 1fr; gap: 12px; background: #fff; border: 1px solid #e1ded7; border-radius: 10px; transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease; }
 .furniture-card:hover { border-color: #c6c9c1; box-shadow: 0 6px 20px rgba(57, 53, 45, .06); transform: translateY(-1px); }
 .furniture-card--added { border-color: #9bb7ad; background: #fafffc; }
 .furniture-card__preview { border: 0; border-radius: 7px; display: grid; place-items: center; background: #f1efe9; cursor: pointer; }
@@ -216,7 +216,13 @@ button:focus-visible, [tabindex]:focus-visible { outline: 3px solid rgba(53, 95,
 .furniture-card__title { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
 .furniture-card h3 { margin: 0; font-size: 14px; font-weight: 700; }
 .furniture-card__title > span { padding: 3px 6px; display: flex; align-items: center; gap: 2px; color: #477467; background: #e4f1ec; border-radius: 8px; font-size: 8px; font-weight: 700; white-space: nowrap; }
-.furniture-card__details > p { margin: 4px 0 10px; color: #888b85; font-size: 10px; }
+.dimension-inputs { margin: 8px 0 9px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.dimension-inputs label { min-width: 0; display: flex; flex-direction: column; gap: 3px; color: #858982; font-size: 8px; font-weight: 650; }
+.dimension-input { min-width: 0; height: 28px; padding: 0 5px 0 7px; display: flex; align-items: center; gap: 3px; background: #f7f6f2; border: 1px solid #ddd9d1; border-radius: 5px; }
+.dimension-input:focus-within { border-color: #6f9187; box-shadow: 0 0 0 2px rgba(53, 95, 86, .12); }
+.dimension-input input { width: 100%; min-width: 0; padding: 0; color: #404540; background: transparent; border: 0; outline: 0; font-size: 11px; font-weight: 700; }
+.dimension-input input::-webkit-inner-spin-button { margin: 0; }
+.dimension-input em { color: #9a9d97; font-size: 8px; font-style: normal; font-weight: 500; }
 .add-button { width: 100%; padding: 6px 8px; display: flex; justify-content: center; align-items: center; gap: 4px; color: #3c665c; background: #edf4f0; border: 1px solid #d3e4de; border-radius: 6px; cursor: pointer; font-size: 10px; font-weight: 700; }
 .add-button:hover { background: #dfeee8; }
 .furniture-card__actions { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }

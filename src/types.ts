@@ -6,6 +6,13 @@ export type Rotation = 0 | 90 | 180 | 270
 
 export type FurnitureKind = 'bed' | 'desk' | 'bookcase' | 'wardrobe'
 
+export type FurnitureDimensions = {
+  width: number
+  depth: number
+}
+
+export type FurnitureDimensionMap = Record<FurnitureKind, FurnitureDimensions>
+
 export type FurnitureDefinition = {
   kind: FurnitureKind
   name: string
@@ -19,6 +26,8 @@ export type FurnitureDefinition = {
 export type PlacedFurniture = {
   id: string
   kind: FurnitureKind
+  width: number
+  depth: number
   x: number
   y: number
   rotation: Rotation

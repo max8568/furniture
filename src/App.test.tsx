@@ -69,4 +69,20 @@ describe('RoomFit interface', () => {
 
     expect(container.querySelector('.furniture__glyph')).toHaveAttribute('transform', 'rotate(90)')
   })
+
+  it('updates furniture dimensions from the sidebar controls', () => {
+    render(<App />)
+    fireEvent.change(screen.getByRole('spinbutton', { name: 'Desk width in centimeters' }), {
+      target: { value: '145' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: 'Add Desk' }))
+
+    expect(screen.getByRole('button', { name: /Desk, 145 by 70 centimeters/ })).toBeInTheDocument()
+
+    fireEvent.change(screen.getByRole('spinbutton', { name: 'Desk depth in centimeters' }), {
+      target: { value: '85' },
+    })
+
+    expect(screen.getByRole('button', { name: /Desk, 145 by 85 centimeters/ })).toBeInTheDocument()
+  })
 })
